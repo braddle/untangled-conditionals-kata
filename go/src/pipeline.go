@@ -11,6 +11,10 @@ func (p *Pipeline) run(project Project) {
 
 	deploySuccessful := p.deploy(project, testsPassed)
 
+	p.emailResults(testsPassed, deploySuccessful)
+}
+
+func (p *Pipeline) emailResults(testsPassed bool, deploySuccessful bool) {
 	if p.config.sendEmailSummary() {
 		p.log.info("Sending email")
 		if testsPassed {
