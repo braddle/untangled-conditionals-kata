@@ -57,8 +57,8 @@ func (p *Pipeline) runTest(project Project) bool {
 	if "success" == project.runTests() {
 		p.log.info("Tests passed")
 		return true
-	} else {
-		p.log.error("Tests failed")
-		return false
 	}
+
+	p.log.error("Tests failed")
+	return false
 }
