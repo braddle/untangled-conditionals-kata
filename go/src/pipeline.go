@@ -53,7 +53,7 @@ func (p *Pipeline) deployFailed(project Project) bool {
 }
 
 func (p *Pipeline) runTest(project Project) error {
-	if !project.hasTests() {
+	if p.noTests(project) {
 		p.log.info("No tests")
 		return nil
 	}
@@ -65,6 +65,10 @@ func (p *Pipeline) runTest(project Project) error {
 	p.log.info("Tests passed")
 	return nil
 
+}
+
+func (p *Pipeline) noTests(project Project) bool {
+	return !project.hasTests()
 }
 
 func (p *Pipeline) testsFailed(project Project) bool {
