@@ -40,12 +40,16 @@ func (p *Pipeline) email(content string)  {
 }
 
 func (p *Pipeline) deploy(project Project) error {
-	if "failure" == project.deploy() {
+	if p.deployFailed(project) {
 		return errors.New("Deployment failed")
 	}
 
 	p.log.info("Deployment successful")
 	return nil
+}
+
+func (p *Pipeline) deployFailed(project Project) bool {
+	return "failure" == project.deploy()
 }
 
 func (p *Pipeline) runTest(project Project) error {
@@ -54,11 +58,15 @@ func (p *Pipeline) runTest(project Project) error {
 		return nil
 	}
 
-	if "failure" == project.runTests() {
+	if p.testsFailed(project) {
 		return errors.New("Tests failed")
 	}
 
 	p.log.info("Tests passed")
 	return nil
 
+}
+
+func (p *Pipeline) testsFailed(project Project) bool {
+	return "failure" == project.runTests()
 }
