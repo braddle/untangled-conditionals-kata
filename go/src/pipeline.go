@@ -13,8 +13,6 @@ func (p *Pipeline) run(project Project) {
 
 	if testsPassed {
 		deploySuccessful = p.deploy(project)
-	} else {
-		deploySuccessful = false
 	}
 
 	if p.config.sendEmailSummary() {
