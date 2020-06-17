@@ -29,9 +29,10 @@ func (p *Pipeline) emailResults(testsPassed bool, deploySuccessful bool) {
 
 	if deploySuccessful {
 		p.emailer.send("Deployment completed successfully")
-	} else {
-		p.emailer.send("Deployment failed")
+		return
 	}
+
+	p.emailer.send("Deployment failed")
 }
 
 func (p *Pipeline) deploy(project Project, testsPassed bool) bool {
