@@ -21,14 +21,16 @@ func (p *Pipeline) emailResults(testsPassed bool, deploySuccessful bool) {
 	}
 
 	p.log.info("Sending email")
-	if testsPassed {
-		if deploySuccessful {
-			p.emailer.send("Deployment completed successfully")
-		} else {
-			p.emailer.send("Deployment failed")
-		}
-	} else {
+
+	if !testsPassed {
 		p.emailer.send("Tests failed")
+		return
+	}
+
+	if deploySuccessful {
+		p.emailer.send("Deployment completed successfully")
+	} else {
+		p.emailer.send("Deployment failed")
 	}
 }
 
