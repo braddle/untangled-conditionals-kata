@@ -16,17 +16,12 @@ func (p *Pipeline) run(project Project) {
 		return
 	}
 
-	deploySuccessful := p.deploy(project, true)
+	deploySuccessful := p.deploy(project)
 
-	p.emailResults(true, deploySuccessful)
+	p.emailResults(deploySuccessful)
 }
 
-func (p *Pipeline) emailResults(testsPassed bool, deploySuccessful bool) {
-	if !testsPassed {
-		p.email("Tests failed")
-		return
-	}
-
+func (p *Pipeline) emailResults(deploySuccessful bool) {
 	if deploySuccessful {
 		p.email("Deployment completed successfully")
 		return
@@ -45,11 +40,7 @@ func (p *Pipeline) email(content string)  {
 	p.emailer.send(content)
 }
 
-func (p *Pipeline) deploy(project Project, testsPassed bool) bool {
-	if !testsPassed {
-		return false
-	}
-
+func (p *Pipeline) deploy(project Project) bool {
 	if "success" == project.deploy() {
 		p.log.info("Deployment successful")
 		return true
