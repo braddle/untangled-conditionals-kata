@@ -11,19 +11,22 @@ type Pipeline struct {
 func (p *Pipeline) run(project Project) {
 	err := p.runTest(project)
 	if err != nil {
-		p.log.error(err.Error())
-		p.email(err.Error())
+		p.handleError(err)
 		return
 	}
 
 	err = p.deploy(project)
 	if err != nil {
-		p.log.error(err.Error())
-		p.email(err.Error())
+		p.handleError(err)
 		return
 	}
 
 	p.email("Deployment completed successfully")
+}
+
+func (p *Pipeline) handleError(err error) {
+	p.log.error(err.Error())
+	p.email(err.Error())
 }
 
 func (p *Pipeline) email(content string)  {
