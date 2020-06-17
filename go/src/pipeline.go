@@ -10,18 +10,7 @@ func (p *Pipeline) run(project Project) {
 	var testsPassed = false
 	var deploySuccessful = false
 
-	if project.hasTests() {
-		if "success" == project.runTests() {
-			p.log.info("Tests passed")
-			testsPassed = true
-		} else {
-			p.log.error("Tests failed")
-			testsPassed = false
-		}
-	} else {
-		p.log.info("No tests")
-		testsPassed = true
-	}
+	testsPassed = p.runTest(project)
 
 	if testsPassed {
 		if "success" == project.deploy() {
@@ -49,4 +38,19 @@ func (p *Pipeline) run(project Project) {
 	} else {
 		p.log.info("Email disabled")
 	}
+}
+
+func (p *Pipeline) runTest(project Project) bool {
+	if project.hasTests() {
+		if "success" == project.runTests() {
+			p.log.info("Tests passed")
+			return true
+		} else {
+			p.log.error("Tests failed")
+			return false
+		}
+	}
+
+	p.log.info("No tests")
+	return true
 }
