@@ -40,12 +40,12 @@ func (p *Pipeline) email(content string)  {
 }
 
 func (p *Pipeline) deploy(project Project) error {
-	if "success" == project.deploy() {
-		p.log.info("Deployment successful")
-		return nil
+	if "failure" == project.deploy() {
+		return errors.New("Deployment failed")
 	}
 
-	return errors.New("Deployment failed")
+	p.log.info("Deployment successful")
+	return nil
 }
 
 func (p *Pipeline) runTest(project Project) error {
