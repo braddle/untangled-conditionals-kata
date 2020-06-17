@@ -54,10 +54,11 @@ func (p *Pipeline) runTest(project Project) error {
 		return nil
 	}
 
-	if "success" == project.runTests() {
-		p.log.info("Tests passed")
-		return nil
+	if "failure" == project.runTests() {
+		return errors.New("Tests failed")
 	}
 
-	return errors.New("Tests failed")
+	p.log.info("Tests passed")
+	return nil
+
 }
