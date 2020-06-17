@@ -44,16 +44,16 @@ func (p *Pipeline) deploy(project Project) bool {
 }
 
 func (p *Pipeline) runTest(project Project) bool {
-	if project.hasTests() {
-		if "success" == project.runTests() {
-			p.log.info("Tests passed")
-			return true
-		} else {
-			p.log.error("Tests failed")
-			return false
-		}
+	if !project.hasTests() {
+		p.log.info("No tests")
+		return true
 	}
 
-	p.log.info("No tests")
-	return true
+	if "success" == project.runTests() {
+		p.log.info("Tests passed")
+		return true
+	} else {
+		p.log.error("Tests failed")
+		return false
+	}
 }
