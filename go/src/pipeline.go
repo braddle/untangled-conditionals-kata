@@ -1,5 +1,7 @@
 package src
 
+import "errors"
+
 type Pipeline struct {
 	config  Config
 	emailer Emailer
@@ -7,11 +9,16 @@ type Pipeline struct {
 }
 
 func (p *Pipeline) run(project Project) {
-	testsPassed := p.runTest(project)
+	err := p.runTest(project)
+	if err != nil {
+		p.log.error(err.Error())
+		p.email(err.Error())
+		return
+	}
 
-	deploySuccessful := p.deploy(project, testsPassed)
+	deploySuccessful := p.deploy(project, true)
 
-	p.emailResults(testsPassed, deploySuccessful)
+	p.emailResults(true, deploySuccessful)
 }
 
 func (p *Pipeline) emailResults(testsPassed bool, deploySuccessful bool) {
@@ -52,17 +59,16 @@ func (p *Pipeline) deploy(project Project, testsPassed bool) bool {
 	return false
 }
 
-func (p *Pipeline) runTest(project Project) bool {
+func (p *Pipeline) runTest(project Project) error {
 	if !project.hasTests() {
 		p.log.info("No tests")
-		return true
+		return nil
 	}
 
 	if "success" == project.runTests() {
 		p.log.info("Tests passed")
-		return true
+		return nil
 	}
 
-	p.log.error("Tests failed")
-	return false
+	return errors.New("Tests failed")
 }
